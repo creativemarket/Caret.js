@@ -56,26 +56,28 @@
       else if document.selection #IE < 9
         this.getOldIEPos()
 
-    getOldIEOffset: ->
+    getOldIEOffset: (pos_delta) ->
+      delta = -1 + (pos_delta || 0)
       range = document.selection.createRange().duplicate()
-      range.moveStart "character", -1
+      range.moveStart "character", delta
       rect = range.getBoundingClientRect()
       { height: rect.bottom - rect.top, left: rect.left, top: rect.top }
 
-    getOffset: (pos) ->
+    getOffset: (pos, pos_delta) ->
       offset = null
+      delta = -1 + (pos_delta || 0)
       if window.getSelection and range = this.range()
-        return null if range.endOffset - 1 < 0
+        return null if range.endOffset + delta < 0
         clonedRange = range.cloneRange()
         # NOTE: have to select a char to get the rect.
-        clonedRange.setStart(range.endContainer, range.endOffset - 1)
-        clonedRange.setEnd(range.endContainer, range.endOffset)
+        clonedRange.setStart(range.endContainer, range.endOffset + delta)
+        clonedRange.setEnd(range.endContainer, range.endOffset + delta + 1)
         rect = clonedRange.getBoundingClientRect()
         offset = { height: rect.height, left: rect.left + rect.width, top: rect.top }
         clonedRange.detach()
         offset
       else if document.selection # ie < 9
-        this.getOldIEOffset()
+        this.getOldIEOffset(pos_delta)
 
       Utils.adjustOffset offset, @$inputor
 

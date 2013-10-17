@@ -31,4 +31,5 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks 'grunt-contrib-uglify'
   grunt.loadNpmTasks 'grunt-contrib-jasmine'
 
+  grunt.registerTask 'ugly', ['coffee', 'uglify']
   grunt.registerTask 'default', ['coffee', 'jasmine', 'uglify']

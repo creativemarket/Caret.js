@@ -67,10 +67,11 @@
         }
       };
 
-      EditableCaret.prototype.getOldIEOffset = function() {
-        var range, rect;
+      EditableCaret.prototype.getOldIEOffset = function(pos_delta) {
+        var delta, range, rect;
+        delta = -1 + (pos_delta || 0);
         range = document.selection.createRange().duplicate();
-        range.moveStart("character", -1);
+        range.moveStart("character", delta);
         rect = range.getBoundingClientRect();
         return {
           height: rect.bottom - rect.top,
@@ -79,16 +80,17 @@
         };
       };
 
-      EditableCaret.prototype.getOffset = function(pos) {
-        var clonedRange, offset, range, rect;
+      EditableCaret.prototype.getOffset = function(pos, pos_delta) {
+        var clonedRange, delta, offset, range, rect;
         offset = null;
+        delta = -1 + (pos_delta || 0);
         if (window.getSelection && (range = this.range())) {
-          if (range.endOffset - 1 < 0) {
+          if (range.endOffset + delta < 0) {
             return null;
           }
           clonedRange = range.cloneRange();
-          clonedRange.setStart(range.endContainer, range.endOffset - 1);
-          clonedRange.setEnd(range.endContainer, range.endOffset);
+          clonedRange.setStart(range.endContainer, range.endOffset + delta);
+          clonedRange.setEnd(range.endContainer, range.endOffset + delta + 1);
           rect = clonedRange.getBoundingClientRect();
           offset = {
             height: rect.height,
@@ -98,7 +100,7 @@
           clonedRange.detach();
           offset;
         } else if (document.selection) {
-          this.getOldIEOffset();
+          this.getOldIEOffset(pos_delta);
         }
         return Utils.adjustOffset(offset, this.$inputor);
       };
