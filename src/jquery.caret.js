@@ -312,8 +312,8 @@
           return this.getPosition(pos);
         }
       },
-      offset: function(pos) {
-        return this.getOffset(pos);
+      offset: function(pos, delta) {
+        return this.getOffset(pos, delta);
       }
     };
     $.fn.caret = function(method) {

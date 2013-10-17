@@ -237,7 +237,7 @@
     position: (pos) ->
       if document.selection then this.getIEPosition pos else this.getPosition pos
 
-    offset: (pos) -> this.getOffset(pos)
+    offset: (pos, delta) -> this.getOffset(pos, delta)
 
   $.fn.caret = (method) ->
     caret = if Utils.contentEditable(this) then new EditableCaret(this) else new InputCaret(this)
